@@ -1,26 +1,48 @@
+<script setup>
+  import {ref} from 'vue'
+
+  const showOverlay = ref(false)
+  const newNote = ref("")
+  const notes = ref([])
+
+
+  function getRandomColor() {
+    return "hsl(" + Math.random() * 360 + ", 100%, 75%)";
+    
+  }
+
+  function addNote () {
+    notes.value.push({
+      id: Math.floor(Math.random() * 1000000),
+      text: newNote.value,
+      date: new Date(),
+      backgroundColor: getRandomColor()
+    })
+    showOverlay.value = false;
+    newNote.value = "";
+  }
+</script>
+
+
 <template>
   <main>
-    <!-- <div class="overlay">
+    <div v-if="showOverlay" class="overlay">
       <div class="modal">
-        <textarea name="note" id="note" cols="30" rows="10"></textarea>
-        <button>Add Note</button>
-        <button class="close">Close</button>
+        <textarea v-model="newNote" name="note" id="note" cols="30" rows="10"></textarea>
+        <button @click="addNote()">Add Note</button>
+        <button class="close" @click="showOverlay= false">Close</button>
       </div>
-    </div> -->
+    </div>
     <div class="container">
       <header>
         <h1>Notes</h1>
-        <button>+</button>
+        <button @click="showOverlay = true">+</button>
       </header>
       <div class="cards-container">
-        <div class="cards">
-          <p class="mains-text">kasldjfhalkjhd</p>
-          <p class="date">27/06/2023</p>
-        </div>
-        <div class="cards">
-          <p class="mains-text">lkasdjhfaslkdfjhaldksj</p>
-          <p class="date">27/06/2023</p>
-        </div>
+        <div v-for="note in notes" :key="note.id" class="cards" :style="{backgroundColor:note.backgroundColor}">
+          <p class="mains-text">{{ note.text }}</p>
+          <p class="date">{{ note.date.toLocaleDateString("pt-BR") }}</p>
+        </div> 
       </div>
     </div>
   </main>
@@ -55,7 +77,7 @@
     font-size: 75px;
   }
 
-   header button{
+  header button{
     border: nome;
     padding: 10px;
     height: 50px;
@@ -115,14 +137,14 @@
   padding: 10px 20px;
   font-size: 20px;
   width: 100%;
-  background-color: blueviolet;
+  background-color: burlywood;
   border: none;
   color: white;
   cursor: pointer;
   margin-top: 15px;
 }
 
-.mode.close{
+ .modal .close{
   background-color: aqua;
   margin-top: 10px;
 }
