@@ -4,6 +4,7 @@
   const showOverlay = ref(false)
   const newNote = ref("")
   const notes = ref([])
+  const errorMessage = ref("")
 
 
   function getRandomColor() {
@@ -12,6 +13,9 @@
   }
 
   function addNote () {
+    if(newNote.value.length < 10){
+      return errorMessage.value= "The note needs more caracters. Gotta be more them 10 caracters"
+    }
     notes.value.push({
       id: Math.floor(Math.random() * 1000000),
       text: newNote.value,
@@ -20,6 +24,7 @@
     })
     showOverlay.value = false;
     newNote.value = "";
+    errorMessage.value = "";
   }
 </script>
 
@@ -28,7 +33,8 @@
   <main>
     <div v-if="showOverlay" class="overlay">
       <div class="modal">
-        <textarea v-model="newNote" name="note" id="note" cols="30" rows="10"></textarea>
+        <textarea v-model.trim="newNote" name="note" id="note" cols="30" rows="10"></textarea>
+        <p v-if="errorMessage"> {{ errorMessage }}</p>
         <button @click="addNote()">Add Note</button>
         <button class="close" @click="showOverlay= false">Close</button>
       </div>
@@ -147,5 +153,9 @@
  .modal .close{
   background-color: aqua;
   margin-top: 10px;
+}
+
+.modal p{
+  color: red;
 }
 </style>
